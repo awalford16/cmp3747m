@@ -71,6 +71,8 @@ resources:
   type: cloud-sql.jinja
   properties:
     region: europe-west2
+    database:
+      name: users
 
 # Google Cloud Storage for IoT sensor data
 
