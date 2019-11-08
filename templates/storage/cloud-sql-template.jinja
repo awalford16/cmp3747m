@@ -1,0 +1,12 @@
+resources:
+- name: {{ env["name"] }}-SQL
+  type: sqladmin.v1beta4.instance
+  properties:
+    region: {{ properties["region"] }}
+    settings:
+      tier: db-n1-standard-1
+      backupConfiguration:
+        binaryLogEnabled: true
+        enabled: true
+      instanceType: CLOUD_SQL_INSTANCE
+      databaseReplicationEnabled: true

@@ -7,6 +7,8 @@ imports:
   name: instance-group.jinja
 - path: templates/networking/firewall-rule-template.jinja
   name: firewall-rule.jinja
+- path: templates/storage/cloud-sql-template.jinja
+  name: cloud-sql.jinja
 
 resources:
 # Network configuration
@@ -65,6 +67,10 @@ resources:
     subnetwork: subnet-frankfurt
 
 # Cloud SQL storage for User login details
+- name: london-storage
+  type: cloud-sql.jinja
+  properties:
+    region: europe-west2
 
 # Google Cloud Storage for IoT sensor data
 
