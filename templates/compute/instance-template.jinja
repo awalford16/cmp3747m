@@ -16,3 +16,8 @@ resources:
         autoDelete: true
         initializeParams:
           sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-10-buster-v20191014
+      {# Startup script to install Nginx webserver on each of the instances #}
+      metadata:
+        items:
+          - key: startup-script
+            value: sudo apt-get update && sudo apt-get install -y nginx

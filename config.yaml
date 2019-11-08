@@ -5,6 +5,8 @@ imports:
   name: subnetwork.jinja
 - path: templates/compute/instance-group-template.jinja
   name: instance-group.jinja
+- path: templates/networking/firewall-rule-template.jinja
+  name: firewall-rule.jinja
 
 resources:
 # Network configuration
@@ -27,6 +29,23 @@ resources:
     region: europe-west3
 
 # Create firewall rules for restricted access to compute resources
+# Allow HTTP connections from all source ranges to compute machines in london
+- name: london-allow-http
+  type: firewall-rule.jinja
+  properties:
+    network: compute-net
+    sourceRanges: [0.0.0.0/0]
+    IPProtocol: TCP
+    ports: ["80", "443"]
+
+# Allow HTTP connections from all source ranges to compute machines in frankfurt
+- name: frankfurt-allow-http
+  type: firewall-rule.jinja
+  properties:
+    network: compute-net
+    sourceRanges: [0.0.0.0/0]
+    IPProtocol: TCP
+    ports: ["80", "443"]
 
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances

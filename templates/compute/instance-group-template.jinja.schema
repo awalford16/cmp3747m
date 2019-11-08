@@ -5,7 +5,7 @@ info:
   version: 1.0
 
 imports:
-- path: ../templates/compute/instance-template.jinja
+- path: instance-template.jinja
 
 required:
 - instanceTemplate
