@@ -1,0 +1,59 @@
+imports:
+- path: templates/networking/network-template.jinja
+  name: network.jinja
+- path: templates/networking/subnetwork-template.jinja
+  name: subnetwork.jinja
+- path: templates/compute/instance-group-template.jinja
+  name: instance-group.jinja
+
+resources:
+# Network configuration
+- name: compute-net
+  type: network.jinja
+
+# Subnetwork configuration (One for each region)
+- name: london
+  type: subnetwork.jinja
+  properties:
+    network: compute-net
+    ipCidrRange: 10.0.0.0/24
+    region: europe-west2
+
+- name: frankfurt
+  type: subnetwork.jinja
+  properties:
+    network: compute-net
+    ipCidrRange: 10.1.0.0/24
+    region: europe-west3
+
+# Create firewall rules for restricted access to compute resources
+
+# 2 regional managed instance group to act as Web servers for user access
+- name: london-instances
+  type: instance-group.jinja
+  properties:
+    instanceTemplate: instance-template
+    region: europe-west2
+    network: compute-net
+    subnetwork: subnet-london
+
+- name: frankfurt-instances
+  type: instance-group.jinja
+  properties:
+    instanceTemplate: instance-template
+    region: europe-west3
+    network: compute-net
+    subnetwork: subnet-frankfurt
+
+# Cloud SQL storage for User login details
+
+# Google Cloud Storage for IoT sensor data
+
+
+# App Engine to host IoT API
+
+
+# Create VPN Gateway and Tunnel
+
+
+# Create Loadbalancer for public traffic

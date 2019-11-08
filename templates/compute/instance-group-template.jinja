@@ -1,0 +1,32 @@
+resources:
+- name: {{ env['name'] }}-template
+  type: instance-template.jinja
+  properties:
+    zone: {{ properties["region"] }}-a
+    network: $(ref.{{ properties["network"] }}.selfLink)
+    subnetwork: $(ref.{{ properties["subnetwork"] }}.selfLink)
+
+{# Region Instance group manager creates redundancy across multiple nodes #}
+- name: {{ env["name"] }}-group
+  type: compute.v1.regionInstanceGroupManager
+  properties:
+    region: {{ properties["region"] }}
+    targetSize: 4
+    instanceTemplate: $(ref.{{ env['name'] }}-template.selfLink)
+    baseInstanceName: {{ env["name"] }}
+
+
+- name: {{ env["name"] }}-autoscaler
+  type: compute.v1.regionAutoscaler
+  properties:
+    target: $(ref.{{ env["name"] }}-group.selfLink)
+    region: {{ properties["region"] }}
+    zone: {{ properties["region"] }}-a
+    autoscalingPolicy:
+      {# Set CPU limit to 70% #}
+      cpuUtilization: 
+        utilizationTarget: 0.7
+      {# Set the maximum and minimum number of instances to 8 and 2 respectively #}
+      maxNumReplicas: 4
+      minNumReplicas: 1
+

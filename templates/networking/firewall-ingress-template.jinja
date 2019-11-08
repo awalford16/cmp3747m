@@ -1,0 +1,9 @@
+resources:
+- name: {{ env["name"] }}
+  type: compute.v1.firewall
+  properties:
+    network: $(ref.{{ properties["network"] }}.selfLink)
+    sourceRanges: {{ properties["sourceRanges"] }}
+    allowed:
+    - IPProtocol: {{ properties["IPProtocol"] }}
+      ports: {{ properties["ports"] }}

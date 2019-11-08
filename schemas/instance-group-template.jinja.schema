@@ -1,0 +1,31 @@
+info:
+  title: Instance Group Template
+  author: 15599328
+  description: Creates a new region instance group manager
+  version: 1.0
+
+imports:
+- path: ../templates/compute/instance-template.jinja
+
+required:
+- instanceTemplate
+- region
+
+properties:
+  instanceTemplate:
+    type: string
+    description: Reference to the instance template used by the instance group manager
+
+  region:
+    type: string
+    description: The region where the instance group manager is located. This will deploy instances to all zones within this region.
+
+  network:
+    type: string
+    default: compute-net
+    description: The network that the intance is on.
+
+  subnetwork:
+    type: string
+    default: subnet-london
+    description: The subnetwork the instance will be on. Subnetwork is relative to the region
