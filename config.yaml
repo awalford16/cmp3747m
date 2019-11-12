@@ -9,6 +9,8 @@ imports:
   name: firewall-rule.jinja
 - path: templates/storage/cloud-sql-template.jinja
   name: cloud-sql.jinja
+- path: templates/storage/cloud-storage-template.jinja
+  name: cloud-storage.jinja
 
 resources:
 # Network configuration for web servers
@@ -47,6 +49,10 @@ resources:
   properties:
     database:
       db_name: users15599328
+
+# Create cloud storage bucket for IoT sensor device data
+- name: sensor-data
+  type: cloud-storage.jinja
   
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances

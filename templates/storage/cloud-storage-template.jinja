@@ -1,0 +1,10 @@
+{% set bucket_name = env["name"] + '-bucket' %}
+
+resources:
+- name: {{ bucket_name }}
+  type: storage.v1.bucket
+  properties:
+    location: eu
+    storageClass: MULTI-REGIONAL
+    versioning:
+      enabled: false
