@@ -1,29 +1,38 @@
-{% set instance_name = env["name"] + '-SQL' %}
-{% set db_name = env['name'] + '-db' %}
-{% set fail_name = env["name"] + '-failover' %}
+{% set instance_name = env["name"] + '-sql' %}
+{% set db_name = env["name"] + '-db' %}
+{% set fail_name = env["name"] + '-fo' %}
 
 resources:
-- name: {{ instance_name }}
+- name: {{ instance_name }}-master
   type: sqladmin.v1beta4.instance
   properties:
-    backendType: SECOND_GEN
-    instanceType: CLOUD_SQL_INSTANCE
-    databaseVersion: POSTGRES_9_6
-    region: {{ properties['cloudsql']['region'] }}
+    region: {{ properties["region"] }}
     settings:
-      tier: {{ properties['cloudsql']['tier'] }}
-      dataDiskSizeGb: {{ properties['cloudsql']['dataDiskSizeGb'] }}
-      dataDiskType: {{ properties['cloudsql']['dataDiskType'] }}
-      storageAutoResize: true
-      replicationType: SYNCHRONOUS
-      locationPreference:
-        zone: {{ properties['cloudsql']['zone'] }}
-      {% if properties['failover'] %}
-      failoverReplica:
-        available: true
-      {% endif %}
-      activationPolicy: ALWAYS
+      tier: {{ properties['tier'] }}
       backupConfiguration:
         enabled: true
         binaryLogEnabled: true
-        startTime: {{ properties['cloudsql']['startTime'] }}
+        startTime: {{ properties["startTime"] }}
+
+{% if properties['database'] %}
+- name: {{ db_name }}
+  type: sqladmin.v1beta4.database
+  properties:
+    name: {{ properties['database']['db_name'] }}
+    instance: $(ref.{{ instance_name }}-master.name)
+    charset: {{ properties['database']['db_charset'] }}
+{% endif %}
+
+{# Create failover within alternate zone for redundancy #}
+{% if properties['failover'] %}
+- name: {{ fail_name }}
+  type: sqladmin.v1beta4.instance
+  properties:
+    region: {{ properties['failover']['fo_region'] }}
+    instanceType: READ_REPLICA_INSTANCE
+    masterInstanceName: $(ref.{{ instance_name }}-master.name)
+    replicaConfiguration:
+      failoverTarget: true
+    settings:
+      tier: {{ properties['tier'] }}
+{% endif %}

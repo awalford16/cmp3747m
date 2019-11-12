@@ -34,8 +34,8 @@ resources:
     region: europe-west3
 
 # Create firewall rules for restricted access to compute resources
-# Allow HTTP connections from all source ranges to compute machines in london
-- name: london-allow-http
+# Allow HTTP connections from all source ranges to compute machines
+- name: compute-allow-http
   type: firewall-rule.jinja
   properties:
     network: compute-net
@@ -43,15 +43,16 @@ resources:
     IPProtocol: TCP
     ports: ["80", "443"]
 
-# Allow HTTP connections from all source ranges to compute machines in frankfurt
-- name: frankfurt-allow-http
-  type: firewall-rule.jinja
+# Cloud SQL storage and database configuration
+# Create failover in alternate region for redundancy
+- name: london-storage
+  type: cloud-sql.jinja
   properties:
-    network: compute-net
-    sourceRanges: [0.0.0.0/0]
-    IPProtocol: TCP
-    ports: ["80", "443"]
-
+    database:
+      db_name: users
+    failover:
+      fo_region: europe-west3
+  
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances
   type: instance-group.jinja
@@ -68,13 +69,6 @@ resources:
     region: europe-west3
     network: compute-net
     subnetwork: subnet-frankfurt
-
-# Cloud SQL storage for User login details
-- name: london-storage
-  type: cloud-sql.jinja
-  properties:
-    failover: true
-    readReplicas: 1
 
 # Google Cloud Storage for IoT sensor data
 

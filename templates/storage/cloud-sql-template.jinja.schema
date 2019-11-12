@@ -5,57 +5,40 @@ info:
   version: 1.0
 
 properties:
-  failover:
-    type: boolean
-    description: Enable a failover instance
-    default: true
+  startTime:
+    type: string
+    description: The time that automatic backups are taken
+    default: 00:00
 
-  readReplicas:
-    type: integer
-    description: number of read replicas
-    minimum: 0
-    maximum: 5
-    default: 0
+  region:
+    type: string
+    description: The region where the SQL instance is located.
+    default: europe-west2
 
-  cloudsql:
+  tier:
+    type: string
+    description: Machine for the SQL instance
+    default: db-n1-stardard-1
+
+  database:
     type: object
-    default:
-      properties: 
+    required:
+      - db_name
     properties:
-      databaseVersion:
+      db_name:
         type: string
-        description: The version of the database
-        default: POSTGRES_9_6
+        description: The name of the database to be created
 
-      startTime:
+      db_charset:
         type: string
-        description: The time that automatic backups are taken
-        default: 00:00
-
-      region:
+        default: utf8
+        
+  failover:
+    type: object
+    required:
+      - fo_region
+    properties:
+      fo_region:
         type: string
-        description: The region where the SQL instance is located.
-        default: europe-west2
-      
-      zone:
-        type: string
-        description: Zone of the SQL instance
-        default: europe-west2-a
-
-      tier:
-        type: string
-        description: Machine for the SQL instance
-        default: db-n1-stardard-1
-
-      dataDiskSizeGb:
-        type: integer
-        description: Size of the database disk.
-        minimum: 10
-        maximum: 5000
-        default: 100
-
-      dataDiskType:
-        type: string
-        description: Disk type
-        default: PD_SSD
+        description: region in which the failover will be located
 
