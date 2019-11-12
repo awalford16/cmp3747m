@@ -1,0 +1,61 @@
+info:
+  title: Cloud SQL Template
+  author: 15599328
+  description: Creates a new Cloud SQL Instance
+  version: 1.0
+
+properties:
+  failover:
+    type: boolean
+    description: Enable a failover instance
+    default: true
+
+  readReplicas:
+    type: integer
+    description: number of read replicas
+    minimum: 0
+    maximum: 5
+    default: 0
+
+  cloudsql:
+    type: object
+    default:
+      properties: 
+    properties:
+      databaseVersion:
+        type: string
+        description: The version of the database
+        default: POSTGRES_9_6
+
+      startTime:
+        type: string
+        description: The time that automatic backups are taken
+        default: 00:00
+
+      region:
+        type: string
+        description: The region where the SQL instance is located.
+        default: europe-west2
+      
+      zone:
+        type: string
+        description: Zone of the SQL instance
+        default: europe-west2-a
+
+      tier:
+        type: string
+        description: Machine for the SQL instance
+        default: db-n1-stardard-1
+
+      dataDiskSizeGb:
+        type: integer
+        description: Size of the database disk.
+        minimum: 10
+        maximum: 5000
+        default: 100
+
+      dataDiskType:
+        type: string
+        description: Disk type
+        default: PD_SSD
+

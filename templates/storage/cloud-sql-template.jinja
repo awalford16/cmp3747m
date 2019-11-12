@@ -1,23 +1,29 @@
 {% set instance_name = env["name"] + '-SQL' %}
 {% set db_name = env['name'] + '-db' %}
+{% set fail_name = env["name"] + '-failover' %}
 
 resources:
 - name: {{ instance_name }}
   type: sqladmin.v1beta4.instance
   properties:
-    region: {{ properties["region"] }}
+    backendType: SECOND_GEN
+    instanceType: CLOUD_SQL_INSTANCE
+    databaseVersion: POSTGRES_9_6
+    region: {{ properties['cloudsql']['region'] }}
     settings:
-      tier: db-n1-standard-1
-      settingsVersion: 
+      tier: {{ properties['cloudsql']['tier'] }}
+      dataDiskSizeGb: {{ properties['cloudsql']['dataDiskSizeGb'] }}
+      dataDiskType: {{ properties['cloudsql']['dataDiskType'] }}
+      storageAutoResize: true
+      replicationType: SYNCHRONOUS
+      locationPreference:
+        zone: {{ properties['cloudsql']['zone'] }}
+      {% if properties['failover'] %}
+      failoverReplica:
+        available: true
+      {% endif %}
+      activationPolicy: ALWAYS
       backupConfiguration:
-        binaryLogEnabled: true
         enabled: true
-
-{% if properties['database'] %}
-- name: {{ db_name }}
-  type: sqladmin.v1beta4.database
-  properties:
-    name: {{ properties['database']['name'] }}
-    instance: $(ref.{{ instance_name }}.name)
-    charset: utf8
-{% endif %}
+        binaryLogEnabled: true
+        startTime: {{ properties['cloudsql']['startTime'] }}
