@@ -18,7 +18,7 @@ properties:
   tier:
     type: string
     description: Machine for the SQL instance
-    default: db-n1-stardard-1
+    default: db-n1-standard-1
 
   database:
     type: object

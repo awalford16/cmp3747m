@@ -11,11 +11,8 @@ imports:
   name: cloud-sql.jinja
 
 resources:
-# Network configuration
+# Network configuration for web servers
 - name: compute-net
-  type: network.jinja
-
-- name: storage-net
   type: network.jinja
 
 # Subnetwork configuration (One for each region)
@@ -45,11 +42,11 @@ resources:
 
 # Cloud SQL storage and database configuration
 # Create failover in alternate region for redundancy
-- name: london-storage
+- name: london-15599328
   type: cloud-sql.jinja
   properties:
     database:
-      db_name: users
+      db_name: users15599328
   
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances
