@@ -32,13 +32,4 @@ properties:
       db_charset:
         type: string
         default: utf8
-        
-  failover:
-    type: object
-    required:
-      - fo_region
-    properties:
-      fo_region:
-        type: string
-        description: region in which the failover will be located
 

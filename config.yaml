@@ -50,8 +50,6 @@ resources:
   properties:
     database:
       db_name: users
-    failover:
-      fo_region: europe-west3
   
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances
