@@ -1,25 +1,29 @@
+{% set template_name = env["name"] + '-template' %}
+{% set instance_group_name = env["name"] + '-group' %}
+{% set autoscaler_name = env["name"] + '-as' %}
+
 resources:
-- name: {{ env['name'] }}-template
+- name: {{ template_name }}
   type: instance-template.jinja
   properties:
     zone: {{ properties["region"] }}-a
     network: $(ref.{{ properties["network"] }}.selfLink)
     subnetwork: $(ref.{{ properties["subnetwork"] }}.selfLink)
+    targetPools: {{ properties["targetPools"] }}
 
 {# Region Instance group manager creates redundancy across multiple nodes #}
-- name: {{ env["name"] }}-group
+- name: {{ instance_group_name }}
   type: compute.v1.regionInstanceGroupManager
   properties:
     region: {{ properties["region"] }}
     targetSize: 4
-    instanceTemplate: $(ref.{{ env['name'] }}-template.selfLink)
+    instanceTemplate: $(ref.{{ template_name }}.selfLink)
     baseInstanceName: {{ env["name"] }}
 
-
-- name: {{ env["name"] }}-autoscaler
+- name: {{ autoscaler_name }}
   type: compute.v1.regionAutoscaler
   properties:
-    target: $(ref.{{ env["name"] }}-group.selfLink)
+    target: $(ref.{{ instance_group_name }}.selfLink)
     region: {{ properties["region"] }}
     zone: {{ properties["region"] }}-a
     autoscalingPolicy:

@@ -10,6 +10,7 @@ imports:
 required:
 - instanceTemplate
 - region
+- targetPools
 
 properties:
   instanceTemplate:
@@ -29,3 +30,7 @@ properties:
     type: string
     default: subnet-london
     description: The subnetwork the instance will be on. Subnetwork is relative to the region
+
+  targetPools:
+    type: array
+    description: Target pools for load balancing

@@ -11,6 +11,8 @@ imports:
   name: cloud-sql.jinja
 - path: templates/storage/cloud-storage-template.jinja
   name: cloud-storage.jinja
+- path: templates/networking/load-balancer-template.jinja
+  name: load-balancer.jinja
 
 resources:
 # Network configuration for web servers
@@ -43,17 +45,29 @@ resources:
     ports: ["80", "443"]
 
 # Cloud SQL storage and database configuration
-# Create failover in alternate region for redundancy
 - name: london-15599328
   type: cloud-sql.jinja
   properties:
     database:
       db_name: users15599328
 
-# Create cloud storage bucket for IoT sensor device data
+# Create a multi-region (eu) cloud storage bucket for IoT sensor device data
 - name: sensor-data
   type: cloud-storage.jinja
   
+# Create an external load balancer to balance incoming HTTP traffic
+- name: london-lb
+  type: load-balancer.jinja
+  properties:
+    port: 443
+    region: europe-west2
+
+- name: frankfurt-lb
+  type: load-balancer.jinja
+  properties:
+    port: 443
+    region: europe-west3
+
 # 2 regional managed instance group to act as Web servers for user access
 - name: london-instances
   type: instance-group.jinja
@@ -62,6 +76,7 @@ resources:
     region: europe-west2
     network: compute-net
     subnetwork: subnet-london
+    targetPools: [$(ref.london-lp-tp.selfLink)]
 
 - name: frankfurt-instances
   type: instance-group.jinja
@@ -70,6 +85,7 @@ resources:
     region: europe-west3
     network: compute-net
     subnetwork: subnet-frankfurt
+    targetPools: [$(ref.frankfurt-lp-tp.selfLink)]
 
 # Google Cloud Storage for IoT sensor data
 

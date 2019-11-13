@@ -1,0 +1,22 @@
+{% set health_check_name = env["name"] + '-hc' %}
+{% set target_pool_name = env["name"] + '-tp' %}
+{% set forward_rule_name = env["name"] + '-fr' %}
+
+resources:
+- name: {{ health_check_name }}
+  type: compute.v1.httpHealthCheck
+  properties:
+    port: {{ properties["port"] }}
+
+- name: {{ target_pool_name }}
+  type: compute.v1.targetPool
+  properties:
+    region: {{ properties["region"] }}
+    healthChecks: [$(ref.{{ health_check_name }}.selfLink)]
+
+- name: {{ forward_rule_name }}
+  type: compute.v1.forwardingRule
+  properties:
+    region: {{ properties["region"] }}
+    portRange: {{ properties["port"] }}
+    target: $(ref.{{ target_pool_name }}.selfLink)
