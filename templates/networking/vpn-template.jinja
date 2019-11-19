@@ -2,15 +2,59 @@
 {% set vpn_gateway = env["name"] + "-gw" %}
 
 resources:
-- name: {{ vpn_gateway}}
+{# Create static IP address for forwarding rule #}
+- type: compute.v1.address
+  name: iot-address
+  properties:
+    region: {{ properties["region"] }}
+
+- name: {{ vpn_gateway }}
   type: compute.v1.targetVpnGateway
   properties:
     region: {{ properties["region"] }}
     network: $(ref.{{ properties["network"] }}.selfLink)
 
-- name: {{ vpn_name }}
+- type: compute.v1.forwardingRules
+  name: {{ vpn_tunnel }}-esp
+  properties:
+    region: {{ properties["region"] }}
+    IPProtocol: ESP
+    IPAddress: $(ref.iot-address.address)
+    target: $(ref.{{ vpn_gateway }}.selfLink)
+    
+- name: {{ vpn_tunnel }}-udp500
+  type: compute.v1.forwardingRules
+  properties:
+    region: {{ properties["region"] }}
+    IPProtocol: UDP
+    portRange: 500
+    IPAddress: $(ref.iot-address.address)
+    target: $(ref.{{ vpn_gateway }}.selfLink)
+
+- name: {{ vpn_tunnel }}-udp4500
+  type: compute.v1.forwardingRules
+  properties:
+    region: {{ properties["region"] }}
+    IPProtocol: UDP
+    portRange: 4500
+    IPAddress: $(ref.iot-address.address)
+    target: $(ref.{{ vpn_gateway }}.selfLink)
+
+- name: {{ vpn_tunnel }}
   type: compute.v1.vpnTunnel
   properties:
     targetVpnGateway: $(ref.{{ vpn_gateway }}.selfLink)
+    forwardingRule: $(ref.{{ vpn_tunnel }}-udp4500.selfLink)
+    region: {{ properties["region"] }}
     peerIp: {{ properties["peerIp"] }}
     sharedSecret: {{ properties["sharedSecret"] }}
+    localTrafficSelector: 
+    - 192.168.0.0/16
+
+- name: {{ vpn_tunnel }}-route
+  type: compute.v1.route
+  properties:
+    network: $(ref.{{ properties["network"] }}.selfLink)
+    nextHopVpnTunnel: $(ref.{{ vpn_tunnel }}.selfLink)
+    priority: 100
+    destRange: 0.0.0.0/0

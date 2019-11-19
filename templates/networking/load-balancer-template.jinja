@@ -3,11 +3,13 @@
 {% set forward_rule_name = env["name"] + '-fr' %}
 
 resources:
+{# Health check to check instance health#}
 - name: {{ health_check_name }}
   type: compute.v1.httpHealthCheck
   properties:
     port: {{ properties["port"] }}
 
+{# Target pool to point towards instance groupd #}
 - name: {{ target_pool_name }}
   type: compute.v1.targetPool
   properties:

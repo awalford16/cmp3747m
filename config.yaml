@@ -13,25 +13,46 @@ imports:
   name: cloud-storage.jinja
 - path: templates/networking/load-balancer-template.jinja
   name: load-balancer.jinja
+- path: templates/networking/vpn-template.jinja
+  name: vpn.jinja
 
 resources:
 # Network configuration for web servers
 - name: compute-net
   type: network.jinja
 
+# Create network of IoT webservers
+- name: iot-net
+  type: network.jinja
+
 # Subnetwork configuration (One for each region)
-- name: london
+- name: london-compute
   type: subnetwork.jinja
   properties:
     network: compute-net
     ipCidrRange: 10.0.0.0/24
     region: europe-west2
 
-- name: frankfurt
+- name: frankfurt-compute
   type: subnetwork.jinja
   properties:
     network: compute-net
     ipCidrRange: 10.1.0.0/24
+    region: europe-west3
+
+# Subnets for IoT webservers within different regions
+- name: london-iot
+  type: subnetwork.jinja
+  properties:
+    network: iot-net
+    ipCidrRange: 10.2.0.0/24
+    region: europe-west2
+
+- name: frankfurt-iot
+  type: subnetwork.jinja
+  properties:
+    network: iot-net
+    ipCidrRange: 10.3.0.0/24
     region: europe-west3
 
 # Create firewall rules for restricted access to compute resources
@@ -43,6 +64,15 @@ resources:
     sourceRanges: [0.0.0.0/0]
     IPProtocol: TCP
     ports: ["80", "443"]
+
+# Only allow https traffic for IoT devices
+- name: iot-allow-https
+  type: firewall-rule.jinja
+  properties:
+    network: iot-net
+    sourceRanges: [0.0.0.0/0]
+    IPProtocol: TCP
+    ports: ["443"]
 
 # Cloud SQL storage and database configuration
 # Includes automatic failover
@@ -77,8 +107,7 @@ resources:
     instanceTemplate: instance-template
     region: europe-west2
     network: compute-net
-    subnetwork: subnet-london
-    cloudStorageInstance: sensor-data
+    subnetwork: subnet-london-compute
     targetPools: 
     - $(ref.london-lb-tp.selfLink)
 
@@ -88,8 +117,38 @@ resources:
     instanceTemplate: instance-template
     region: europe-west3
     network: compute-net
-    subnetwork: subnet-frankfurt
+    subnetwork: subnet-frankfurt-compute
     targetPools: 
     - $(ref.frankfurt-lb-tp.selfLink)
 
-# Create VPN Gateway and Tunnel
+# Create server instances for IoT requests
+- name: london-iot-servers
+  type: instance-group.jinja
+  properties:
+    instanceTemplate: instance-template
+    region: europe-west2
+    network: iot-net
+    subnetwork: subnet-london-iot
+    cloudStorageInstance: $(ref.sensor-data.name)
+    targetPools: 
+    - $(ref.london-lb-tp.selfLink)
+
+- name: frankfurt-iot-servers
+  type: instance-group.jinja
+  properties:
+    instanceTemplate: instance-template
+    region: europe-west3
+    network: iot-net
+    subnetwork: subnet-frankfurt-iot
+    cloudStorageInstance: $(ref.sensor-data.name)
+    targetPools: 
+    - $(ref.frankfurt-lb-tp.selfLink)
+
+# Create VPN Gateway and Tunnel for IoT connections
+- name: iot-vpn
+  type: vpn.jinja
+  properties:
+    region: europe-west2
+    network: iot-net
+    peerIp: 192.0.5.2
+    sharedSecret: vpn123Key

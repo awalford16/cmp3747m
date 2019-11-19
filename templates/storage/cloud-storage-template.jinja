@@ -1,4 +1,5 @@
-{% set bucket_name = env["name"] + '-bucket' %}
+{% set instance_num = range(10, 9999) | random | string %}
+{% set bucket_name = env["name"] + instance_num + '-bucket' %}
 
 resources:
 - name: {{ bucket_name }}
