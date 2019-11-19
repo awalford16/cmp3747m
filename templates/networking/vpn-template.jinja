@@ -1,0 +1,16 @@
+{% set vpn_tunnel = env["name"] + "-tunnel" %}
+{% set vpn_gateway = env["name"] + "-gw" %}
+
+resources:
+- name: {{ vpn_gateway}}
+  type: compute.v1.targetVpnGateway
+  properties:
+    region: {{ properties["region"] }}
+    network: $(ref.{{ properties["network"] }}.selfLink)
+
+- name: {{ vpn_name }}
+  type: compute.v1.vpnTunnel
+  properties:
+    targetVpnGateway: $(ref.{{ vpn_gateway }}.selfLink)
+    peerIp: {{ properties["peerIp"] }}
+    sharedSecret: {{ properties["sharedSecret"] }}
