@@ -4,7 +4,7 @@ resources:
 - name: {{ bucket_name }}
   type: storage.v1.bucket
   properties:
-    location: eu
-    storageClass: MULTI_REGIONAL
+    location: {{ properties["location"] }}
+    storageClass: {{ properties["storageClass"] }}
     versioning:
-      enabled: false
+      enabled: {{ properties["versioning"] }}

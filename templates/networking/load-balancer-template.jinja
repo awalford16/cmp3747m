@@ -18,5 +18,4 @@ resources:
   type: compute.v1.forwardingRule
   properties:
     region: {{ properties["region"] }}
-    portRange: {{ properties["port"] }}
     target: $(ref.{{ target_pool_name }}.selfLink)

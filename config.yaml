@@ -45,9 +45,11 @@ resources:
     ports: ["80", "443"]
 
 # Cloud SQL storage and database configuration
-- name: london-15599328
+# Includes automatic failover
+- name: london-users
   type: cloud-sql.jinja
   properties:
+    region: europe-west2
     database:
       db_name: users15599328
 
@@ -76,6 +78,7 @@ resources:
     region: europe-west2
     network: compute-net
     subnetwork: subnet-london
+    cloudStorageInstance: sensor-data
     targetPools: 
     - $(ref.london-lb-tp.selfLink)
 
@@ -88,11 +91,5 @@ resources:
     subnetwork: subnet-frankfurt
     targetPools: 
     - $(ref.frankfurt-lb-tp.selfLink)
-
-# Google Cloud Storage for IoT sensor data
-
-
-# App Engine to host IoT API
-
 
 # Create VPN Gateway and Tunnel

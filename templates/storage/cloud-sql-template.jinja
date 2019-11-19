@@ -1,4 +1,7 @@
-{% set instance_name = env["name"] + '-sql' %}
+{# Randomise number to avoid naming clashes on storage creation #}
+{% set instance_num = range(10, 9999) | random | string %}
+
+{% set instance_name = env["name"] + instance_num + '-sql' %}
 {% set db_name = env["name"] + '-db' %}
 {% set fail_name = env["name"] + '-fo' %}
 

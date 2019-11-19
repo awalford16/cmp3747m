@@ -1,0 +1,28 @@
+info:
+  title: Firewall Rule Template
+  author: 15599328
+  description: Creates a new firewall rule
+  version: 1.0
+
+required:
+- IPProtocol
+
+properties:
+  IPProtocol:
+    type: string
+    description: The IP protocol that the rule applies to
+
+  sourceRanges:
+    type: array
+    deafult: [0.0.0.0/0]
+    description: IP ranges accepted by the firewall rule
+
+  network:
+    type: string
+    default: compute-net
+    description: The network that the rule applies to
+
+  ports:
+    type: array
+    default: ["80"]
+    description: The port that can be accessed

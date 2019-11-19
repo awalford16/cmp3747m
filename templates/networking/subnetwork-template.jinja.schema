@@ -1,0 +1,25 @@
+info:
+  title: Subnetwork Template
+  author: 15599328
+  description: Creates a new Subnetwork
+  version: 1.0
+
+required:
+- ipCidrRange
+
+properties:
+  network:
+    type: string
+    description: The network that the subnet belongs to
+    default: compute-net
+
+  ipCidrRange:
+    type: string
+    description: The range of IP addresses available to the subnet in CIDR form
+
+  region:
+    type: string
+    description: Subnets are regional, so must be applied within a specified region
+    default: europe-west2
+
+

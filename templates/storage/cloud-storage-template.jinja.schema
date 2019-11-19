@@ -1,0 +1,21 @@
+info:
+  title: Cloud Storage Template
+  author: 15599328
+  description: Creates a new Cloud Storage bucket
+  version: 1.0
+
+properties:
+  storageClass:
+    type: string
+    description: REGIONAL or MULTI_REGIONAL
+    default: MULTI_REGIONAL
+
+  location:
+    type: string
+    description: Regions where storage applies. Default is eu
+    default: eu
+
+  versioning:
+    type: boolean
+    description: Whether or not versioning is enabled for bucket storage
+    default: false

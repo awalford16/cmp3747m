@@ -1,0 +1,19 @@
+info:
+  title: Loadbalancer Template
+  author: 15599328
+  description: Creates a new Loadbalancer
+  version: 1.0
+
+required:
+- region
+
+properties:
+  port:
+    type: number
+    description: Port defined for the health check and forwarding rule
+    default: 443
+
+  region:
+    type: string
+    description: The region where the Loadbalancer is located
+

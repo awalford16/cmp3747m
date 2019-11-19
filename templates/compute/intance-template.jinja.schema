@@ -1,0 +1,27 @@
+info:
+  title: Cloud SQL Template
+  author: 15599328
+  description: Creates a new Cloud SQL Instance
+  version: 1.0
+
+required:
+- subnetwork
+
+properties:
+  network:
+    type: string
+    description: The netowrk that the instance will be located on
+    default: compute-net
+
+  subnetwork:
+    type: string
+    description: The subnetwork the instance will be assigned to
+
+  cloudSqlInstance:
+    type: string
+    description: SQL instances linked to the instance
+
+  cloudStorageInstance:
+    type: string
+    description: Bucket storage assigned to instances
+

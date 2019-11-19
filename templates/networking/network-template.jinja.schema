@@ -1,0 +1,11 @@
+info:
+  title: Firewall Rule Template
+  author: 15599328
+  description: Creates a new firewall rule
+  version: 1.0
+
+properties:
+  autoCreateSubnets:
+    type: boolean
+    default: false
+    description: Whether or not the network automatically creates subnets. Default is false

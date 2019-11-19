@@ -22,7 +22,11 @@ resources:
           - key: startup-script
             value: sudo apt-get update && sudo apt-get install -y nginx
           {# Make instance a client of the database #}
-          {% if properties['cloud-sql-instances'] %}
+          {% if properties['cloudSqlInstance'] %}
           - key: cloud-sql-instances
-            value: {{ properties['cloud-sql-instances'] }}
+            value: {{ properties['cloudSqlInstance'] }}
+          {% endif %}
+          {% if properties['CloudStorageInstance'] %}
+          - key: cloud-storage-instances
+            value: {{ properties['cloudStorageInstance'] }}
           {% endif %}
