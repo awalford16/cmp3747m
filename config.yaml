@@ -76,7 +76,8 @@ resources:
     region: europe-west2
     network: compute-net
     subnetwork: subnet-london
-    targetPools: [$(ref.london-lp-tp.selfLink)]
+    targetPools: 
+    - $(ref.london-lb-tp.selfLink)
 
 - name: frankfurt-instances
   type: instance-group.jinja
@@ -85,7 +86,8 @@ resources:
     region: europe-west3
     network: compute-net
     subnetwork: subnet-frankfurt
-    targetPools: [$(ref.frankfurt-lp-tp.selfLink)]
+    targetPools: 
+    - $(ref.frankfurt-lb-tp.selfLink)
 
 # Google Cloud Storage for IoT sensor data
 
@@ -94,6 +96,3 @@ resources:
 
 
 # Create VPN Gateway and Tunnel
-
-
-# Create Loadbalancer for public traffic

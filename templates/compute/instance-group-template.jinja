@@ -9,7 +9,6 @@ resources:
     zone: {{ properties["region"] }}-a
     network: $(ref.{{ properties["network"] }}.selfLink)
     subnetwork: $(ref.{{ properties["subnetwork"] }}.selfLink)
-    targetPools: {{ properties["targetPools"] }}
 
 {# Region Instance group manager creates redundancy across multiple nodes #}
 - name: {{ instance_group_name }}
@@ -19,6 +18,7 @@ resources:
     targetSize: 4
     instanceTemplate: $(ref.{{ template_name }}.selfLink)
     baseInstanceName: {{ env["name"] }}
+    targetPools: {{ properties["targetPools"] }}
 
 - name: {{ autoscaler_name }}
   type: compute.v1.regionAutoscaler

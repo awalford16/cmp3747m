@@ -24,5 +24,5 @@ resources:
           {# Make instance a client of the database #}
           {% if properties['cloud-sql-instances'] %}
           - key: cloud-sql-instances
-          value: {{ properties['cloud-sql-instances'] }}
+            value: {{ properties['cloud-sql-instances'] }}
           {% endif %}
