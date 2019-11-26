@@ -129,7 +129,6 @@ resources:
     region: europe-west2
     network: iot-net
     subnetwork: subnet-london-iot
-    cloudStorageInstance: $(ref.sensor-data.name)
     targetPools: 
     - $(ref.london-lb-tp.selfLink)
 
@@ -140,7 +139,6 @@ resources:
     region: europe-west3
     network: iot-net
     subnetwork: subnet-frankfurt-iot
-    cloudStorageInstance: $(ref.sensor-data.name)
     targetPools: 
     - $(ref.frankfurt-lb-tp.selfLink)
 
