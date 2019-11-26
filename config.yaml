@@ -145,10 +145,11 @@ resources:
     - $(ref.frankfurt-lb-tp.selfLink)
 
 # Create VPN Gateway and Tunnel for IoT connections
-- name: iot-vpn
+- name: london-iot-vpn
+  type: vpn.jinja
+
+- name: frankfurt-iot-vpn
   type: vpn.jinja
   properties:
-    region: europe-west2
-    network: iot-net
-    peerIp: 192.0.5.2
-    sharedSecret: vpn123Key
+    region: europe-west3
+    peerIp: 192.0.5.3

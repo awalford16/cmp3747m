@@ -4,7 +4,7 @@
 resources:
 {# Create static IP address for forwarding rule #}
 - type: compute.v1.address
-  name: iot-address
+  name: {{ properties["region"] }}-iot-address
   properties:
     region: {{ properties["region"] }}
 
@@ -14,12 +14,13 @@ resources:
     region: {{ properties["region"] }}
     network: $(ref.{{ properties["network"] }}.selfLink)
 
+{# Create forwarding rules #}
 - type: compute.v1.forwardingRules
   name: {{ vpn_tunnel }}-esp
   properties:
     region: {{ properties["region"] }}
     IPProtocol: ESP
-    IPAddress: $(ref.iot-address.address)
+    IPAddress: $(ref.{{ properties["region"] }}-iot-address.address)
     target: $(ref.{{ vpn_gateway }}.selfLink)
     
 - name: {{ vpn_tunnel }}-udp500
@@ -28,7 +29,7 @@ resources:
     region: {{ properties["region"] }}
     IPProtocol: UDP
     portRange: 500
-    IPAddress: $(ref.iot-address.address)
+    IPAddress: $(ref.{{ properties["region"] }}-iot-address.address)
     target: $(ref.{{ vpn_gateway }}.selfLink)
 
 - name: {{ vpn_tunnel }}-udp4500
@@ -37,9 +38,10 @@ resources:
     region: {{ properties["region"] }}
     IPProtocol: UDP
     portRange: 4500
-    IPAddress: $(ref.iot-address.address)
+    IPAddress: $(ref.{{ properties["region"] }}-iot-address.address)
     target: $(ref.{{ vpn_gateway }}.selfLink)
 
+{# Tunnel to connect peer network with gateway #}
 - name: {{ vpn_tunnel }}
   type: compute.v1.vpnTunnel
   properties:
@@ -51,6 +53,16 @@ resources:
     localTrafficSelector: 
     - 192.168.0.0/16
 
+{# Create a firewall rule to restrict inbound traffic from peer network #}
+- name: {{ vpn_tunnel }}-fw
+  type: firewall-rule.jinja
+  properties:
+    IPProtocol: tcp
+    network: {{ properties["network"] }}
+    ports: 
+    - 443
+
+{# Route all outbound traffic to peer network #}
 - name: {{ vpn_tunnel }}-route
   type: compute.v1.route
   properties:

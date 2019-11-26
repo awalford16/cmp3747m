@@ -1,0 +1,30 @@
+info:
+  title: VPN Template
+  author: 15599328
+  description: Creates a new VPN Gateway and Tunnel with Peer IP
+  version: 1.0
+
+imports:
+- path: firewall-rule-template.jinja
+  name: firewall-rule.jinja
+
+properties:
+  region:
+    type: string
+    default: europe-west2
+    description: The region the VPN is deployed in
+
+  peerIp:
+    type: string
+    default: 192.0.5.2
+    description: IP address connected to the VPN gateway
+
+  network:
+    type: string
+    default: iot-net
+    description: The network that the VPN connects to
+
+  sharedSecret:
+    type: string
+    default: vpn123Key
+    description: The key used to encrypt the VPN tunnel
